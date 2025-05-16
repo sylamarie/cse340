@@ -1,7 +1,7 @@
-CREATE TYPE public.accout_type AS ENUM
+CREATE TYPE public.account_type AS ENUM
     ('Client', 'Employee', 'Admin');
 
-ALTER TYPE public.accout_type
+ALTER TYPE public.account_type
     OWNER TO sylamarie;
 
     --Table structure for table 'classification'
@@ -238,3 +238,13 @@ VALUES   (
     'White',
     5
   );
+
+-- 4. Replace "small interiors" with "a huge interior" in the GM Hummer description
+UPDATE public.inventory
+SET inv_description = REPLACE(inv_description, 'small interiors', 'a huge interior')
+WHERE inv_make = 'GM' AND inv_model = 'Hummer';
+
+-- 6. Add '/vehicles' to image and thumbnail paths
+UPDATE public.inventory
+SET inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/'),
+    inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/');
