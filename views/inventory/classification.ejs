@@ -1,12 +1,19 @@
-<!-- Content Heading Section -->
-<% if (title) { %>
-    <h1>
-        <%= title %>
-    </h1>
-    <% } else { res.redirect('/')} %>
+<%- include('../partials/header') %>
 
-<!-- Message Block (currently disabled) -->
-<%# messages() %>
+<main>
+    <% if (title) { %>
+        <h1><%= title %></h1>
+    <% } else { %>
+        <script>window.location.href = "/"</script>
+    <% } %>
 
-<!-- Inventory Items Display -->
-<%- grid %>
+    <!-- Message Block (enable later if needed) -->
+    <%# messages() %>
+
+    <!-- Inventory Items Display -->
+    <div class="inventory-grid">
+        <%- grid %>
+    </div>
+</main>
+
+<!-- <%- include('../partials/footer') %> -->
