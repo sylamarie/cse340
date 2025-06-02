@@ -40,8 +40,7 @@ invCont.buildDetailView = async function (req, res, next) {
     return res.status(404).send("Vehicle not found")
   }
 
-  // Make sure buildClassificationGrid can accept a single object
-  const grid = await utilities.buildClassificationGrid([vehicleData])
+  const grid = utilities.buildDetailHtml(vehicleData)
   const title = `${vehicleData.inv_make} ${vehicleData.inv_model}`
 
   res.render("./inventory/classification", {

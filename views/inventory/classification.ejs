@@ -11,9 +11,15 @@
     <%# messages() %>
 
     <!-- Inventory Items Display -->
-    <div class="inventory-grid">
-        <%- grid %>
-    </div>
+    <% if (grid.includes('vehicle-detail-container')) { %>
+        <div class="vehicle-detail-wrapper">
+            <%- grid %>
+        </div>
+        <% } else { %>
+            <div class="inventory-grid">
+                <%- grid %>
+            </div>
+            <% } %>
 </main>
 
 <!-- <%- include('../partials/footer') %> -->
