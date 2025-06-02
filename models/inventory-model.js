@@ -28,6 +28,7 @@ async function getInventoryById(inv_id) {
     return data.rows[0]
   } catch (error) {
     console.error("getInventoryById error " + error)
+    throw error // <--- this is important
   }
 }
 
