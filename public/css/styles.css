@@ -403,6 +403,35 @@ form.form-card button {
   text-decoration: none;
 }
 
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input[type="password"],
+.password-wrapper input[type="text"] {
+  width: 100%;
+  padding-right: 0.5rem;
+  /* Make room for the icon */
+}
+
+.toggle-eye {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.password-rules {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 5px;
+}
+
+.hidden {
+  display: none;
+}
+
 /******* Responsive Design ***************/
 @media screen and (min-width: 768px) {
 

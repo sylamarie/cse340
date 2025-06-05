@@ -1,26 +1,56 @@
-<!-- <%- include('../partials/header') %> -->
-
 <main>
     <h1>
         <%= title %>
     </h1>
+
     <!-- Flash Messages -->
     <%- messages() %>
+
         <!-- Registration Form -->
         <form action="/account/register" method="post" class="register-form">
             <label for="account_firstname">First Name:</label>
-            <input type="text" id="account_firstname"name="account_firstname" required>
+            <input type="text" id="account_firstname" name="account_firstname" required>
+
             <label for="account_lastname">Last Name:</label>
-            <input type="text" id="account_lastname" name="account_lastname"required>
+            <input type="text" id="account_lastname" name="account_lastname" required>
+
             <label for="account_email">Email:</label>
-            <input type="email" id="account_email" name="account_email"required>
+            <input type="email" id="account_email" name="account_email" required>
+
             <label for="account_password">Password:</label>
-            <input type="password" id="account_password"name="account_password" required>
+            <div class="password-wrapper">
+                <input type="password" id="account_password" name="account_password" required>
+                <span class="toggle-eye" onclick="togglePassword()">👁</span>
+            </div>
+            <p id="password-rules" class="form-helper password-rules hidden">
+                Password must be at least 12 characters, include 1 uppercase letter, 1 number, and 1 special character.
+            </p>
+
             <button type="submit">Register</button>
         </form>
+
         <p class="form-helper">
             Already have an account?
             <a href="/account/login">Log in</a>
         </p>
 </main>
-<!-- <%- include('../partials/footer') %> -->
+    
+
+<script>
+    function togglePassword() {
+        const pw = document.getElementById("account_password");
+        pw.type = pw.type === "password" ? "text" : "password";
+    }
+
+    document.getElementById("account_password").addEventListener("input", function () {
+        const pw = this.value;
+        const rules = document.getElementById("password-rules");
+
+        const isValid = pw.length >= 12 &&
+            /[A-Z]/.test(pw) &&
+            /\d/.test(pw) &&
+            /[^A-Za-z0-9]/.test(pw);
+
+        rules.classList.toggle("hidden", isValid || pw.length === 0);
+    });
+</script>  
