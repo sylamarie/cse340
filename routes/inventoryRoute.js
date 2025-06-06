@@ -18,4 +18,7 @@ router.get(
 // Intentional error route using controller function
 router.get("/cause-error", utilities.handleErrors(invController.causeError))
 
+// Route to inventory management view (Task 1)
+router.get("/", utilities.handleErrors(invController.buildManagement))
+
 module.exports = router
