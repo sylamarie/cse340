@@ -25,6 +25,38 @@ const validateClassification = [
   }
 ]
 
+// task 3 -- week 4 -- Add Inventory Validation
+const inventoryRules = () => {
+  return [
+    body("classification_id").notEmpty().withMessage("Classification is required."),
+    body("inv_make").trim().notEmpty().withMessage("Make is required."),
+    body("inv_model").trim().notEmpty().withMessage("Model is required."),
+    body("inv_year").isInt({ min: 1900 }).withMessage("Year must be valid."),
+    body("inv_description").notEmpty().withMessage("Description is required."),
+    body("inv_image").notEmpty().withMessage("Image path is required."),
+    body("inv_thumbnail").notEmpty().withMessage("Thumbnail path is required."),
+    body("inv_price").isFloat({ min: 0 }).withMessage("Price must be a number."),
+    body("inv_miles").isInt({ min: 0 }).withMessage("Miles must be a valid number."),
+    body("inv_color").notEmpty().withMessage("Color is required.")
+  ]
+}
+
+const checkInventoryData = async (req, res, next) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    let classificationList = await utilities.buildClassificationList(req.body.classification_id)
+    return res.render("./inventory/add-inventory", {
+      title: "Add Inventory",
+      classificationList,
+      errors: errors.array(),
+      ...req.body
+    })
+  }
+  next()
+}
+
 module.exports = {
-  checkClassificationName: validateClassification
+    checkClassificationName: validateClassification,
+    inventoryRules,
+    checkInventoryData
 }
