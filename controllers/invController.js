@@ -81,22 +81,19 @@ invCont.buildAddClassification = async function (req, res, next) {
 };
 
 invCont.addClassification = async function (req, res, next) {
-  let nav = await utilities.getNav();
-  const { classification_name } = req.body;
+  try {
+    const { classification_name } = req.body;
+    const addResult = await invModel.addClassification(classification_name);
 
-  const result = await invModel.addClassification(classification_name);
+    if (!addResult || addResult.rowCount === 0) {
+      req.flash("error", "Failed to add classification.");
+      return res.redirect("/inv/add-classification");
+    }
 
-  if (result) {
-    req.flash("notice", "Classification added successfully.");
-    nav = await utilities.getNav();
-    return res.render("./inventory/management", {
-      title: "Inventory Management",
-      nav,
-      messages: req.flash(),
-    });
-  } else {
-    req.flash("error", "Failed to add classification.");
-    return res.redirect("/inv/add-classification");
+    req.flash("message", "Classification added successfully.");
+    res.redirect("/inv/");  // redirect to inventory management or main page
+  } catch (error) {
+    next(error);
   }
 };
 
