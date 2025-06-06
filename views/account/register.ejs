@@ -6,6 +6,14 @@
     <!-- Flash Messages -->
     <%- messages() %>
 
+    <% if (errors) { %>
+       <ul class="notice">
+        <% errors.array().forEach(error => { %>
+         <li><%= error.msg %></li>
+        <%  }) %>
+       </ul>
+    <% } %>
+
         <!-- Registration Form -->
         <form action="/account/register" method="post" class="register-form">
             <label for="account_firstname">First Name:</label>
@@ -15,7 +23,7 @@
             <input type="text" id="account_lastname" name="account_lastname" required>
 
             <label for="account_email">Email:</label>
-            <input type="email" id="account_email" name="account_email" required>
+            <input type="email" id="account_email" name="account_email" required placeholder="Enter a valid email address">
 
             <label for="account_password">Password:</label>
             <div class="password-wrapper">
