@@ -70,4 +70,34 @@ invCont.causeError = (req, res, next) => {
   }
 }
 
+// Task 2 -- week 4
+invCont.buildAddClassification = async function (req, res, next) {
+  let nav = await utilities.getNav()
+  res.render("./inventory/add-classification", {
+    title: "Add Classification",
+    nav,
+    messages: req.flash(),
+  })
+}
+
+invCont.addClassification = async function (req, res, next) {
+  let nav = await utilities.getNav()
+  const { classification_name } = req.body
+
+  const result = await invModel.addClassification(classification_name)
+
+  if (result) {
+    req.flash("notice", "Classification added successfully.")
+    nav = await utilities.getNav()
+    return res.render("./inventory/management", {
+      title: "Inventory Management",
+      nav,
+      messages: req.flash(),
+    })
+  } else {
+    req.flash("error", "Failed to add classification.")
+    return res.redirect("/inv/add-classification")
+  }
+}
+
 module.exports = invCont

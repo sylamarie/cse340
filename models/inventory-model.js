@@ -32,8 +32,22 @@ async function getInventoryById(inv_id) {
   }
 }
 
+// task 2 -- week 4
+async function addClassification(classification_name) {
+  try {
+    const sql = "INSERT INTO classification (classification_name) VALUES ($1) RETURNING *"
+    const result = await pool.query(sql, [classification_name])
+    return result.rows[0]
+  } catch (error) {
+    console.error("addClassification error:", error)
+    return null
+  }
+}
+
+
 module.exports = {
   getClassifications,
   getInventoryByClassificationId,
-  getInventoryById
+  getInventoryById,
+  addClassification
 }
