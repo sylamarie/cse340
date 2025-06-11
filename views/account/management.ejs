@@ -1,0 +1,15 @@
+<!-- <%- include("../partials/header") %> -->
+
+<main>
+  <h1>Account Management</h1>
+
+  <%- messages() %>
+
+  <% if (loggedin) { %>
+    <p>You're logged in</p>
+  <% } else { %>
+    <p>You are not logged in</p>
+  <% } %>
+</main>
+
+<!-- <%- include("../partials/footer") %> -->  
