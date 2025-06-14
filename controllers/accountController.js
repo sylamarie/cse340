@@ -31,34 +31,48 @@ async function buildRegister(req, res, next) {
  *  Process Registration
  * *************************************** */
 async function registerAccount(req, res) {
-    let nav = await utilities.getNav();
-    const { account_firstname, account_lastname, account_email, account_password } = req.body;
-  
+  let nav = await utilities.getNav();
+  const { account_firstname, account_lastname, account_email, account_password } = req.body;
+
+  try {
+    const hashedPassword = await bcrypt.hash(account_password, 10);
+
+    console.log("Hashed password before insert:", hashedPassword);
+
     const regResult = await accountModel.registerAccount(
       account_firstname,
       account_lastname,
       account_email,
-      account_password
+      hashedPassword
     );
-  
+
+
     if (regResult && !regResult.message) {
       req.flash(
         "notice",
         `Congratulations, you're registered ${account_firstname}. Please log in.`
       );
-      res.status(201).render("account/login", {
+      return res.status(201).render("account/login", {
         title: "Login",
         nav,
       });
     } else {
       req.flash("notice", "Sorry, the registration failed.");
-      res.status(501).render("account/register", {
+      return res.status(501).render("account/register", {
         title: "Register",
         nav,
         errors: null,
       });
     }
+  } catch (error) {
+    req.flash("notice", "An error occurred during registration.");
+    return res.status(500).render("account/register", {
+      title: "Register",
+      nav,
+      errors: null,
+    });
   }
+}
 
   /* ****************************************
  *  Process login request
@@ -88,7 +102,7 @@ async function accountLogin(req, res) {
       }
       return res.redirect("/account/")
     } else {
-      req.flash("message notice", "Please check your credentials and try again.")
+      req.flash("notice", "Please check your credentials and try again.")
       res.status(400).render("account/login", {
         title: "Login",
         nav,
@@ -97,7 +111,7 @@ async function accountLogin(req, res) {
       })
     }
   } catch (error) {
-    throw new Error('Access Forbidden')
+    throw new Error("Access Forbidden")
   }
 }
 

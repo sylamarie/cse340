@@ -96,17 +96,29 @@ Util.checkJWTToken = (req, res, next) => {
         if (err) {
           req.flash("notice", "Please log in")
           res.clearCookie("jwt")
-          res.locals.loggedin = 0 // ✅ must be here
+          res.locals.loggedin = 0
           return res.redirect("/account/login")
         }
         res.locals.accountData = accountData
-        res.locals.loggedin = 1 // ✅ critical
+        res.locals.loggedin = 1
         next()
       }
     )
   } else {
-    res.locals.loggedin = 0 // ✅ must be here
+    res.locals.loggedin = 0
     next()
+  }
+}
+
+/* ****************************************
+ *  Check Login
+ * ************************************ */
+Util.checkLogin = (req, res, next) => {
+  if (res.locals.loggedin) {
+    next()
+  } else {
+    req.flash("notice", "Please log in.")
+    return res.redirect("/account/login")
   }
 }
 
