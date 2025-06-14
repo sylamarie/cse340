@@ -10,7 +10,7 @@ invCont.buildManagement = async function (req, res, next) {
     title: "Inventory Management",
     nav,
     classificationSelect,
-    message: req.flash("message"),
+    message: req.flash("notice"),
   });
 };
 
@@ -215,12 +215,11 @@ invCont.getInventoryJSON = async (req, res, next) => {
 invCont.buildEditInventory = async function (req, res, next) {
   try {
     const inv_id = parseInt(req.params.inv_id);
-    let nav = await utilities.getNav();
-
+    const nav = await utilities.getNav();
     const itemData = await invModel.getInventoryById(inv_id);
 
     if (!itemData) {
-      req.flash("error", "Inventory item not found.");
+      req.flash("notice", "Inventory item not found.");
       return res.redirect("/inv/");
     }
 
@@ -243,12 +242,110 @@ invCont.buildEditInventory = async function (req, res, next) {
       inv_miles: itemData.inv_miles,
       inv_color: itemData.inv_color,
       classification_id: itemData.classification_id,
-      message: req.flash("message")
+      message: req.flash("notice")
     });
   } catch (error) {
     next(error);
   }
 };
 
+/* ***************************
+ *  Update Inventory Data
+ * ************************** */
+invCont.updateInventory = async function (req, res, next) {
+  const nav = await utilities.getNav();
+  const {
+    inv_id,
+    inv_make,
+    inv_model,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_year,
+    inv_miles,
+    inv_color,
+    classification_id,
+  } = req.body;
+
+  try {
+    // 1. Get the original data
+    const originalData = await invModel.getInventoryById(inv_id);
+    if (!originalData) {
+      req.flash("notice", "Original vehicle data not found.");
+      return res.redirect("/inv/");
+    }
+
+    // 2. Attempt the update
+    const updateResult = await invModel.updateInventory(
+      inv_id,
+      inv_make,
+      inv_model,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_year,
+      inv_miles,
+      inv_color,
+      classification_id
+    );
+
+    // 3. If update succeeded, compare fields
+    if (updateResult) {
+      const changes = [];
+      const fieldsToCompare = {
+        "Make": [originalData.inv_make, inv_make],
+        "Model": [originalData.inv_model, inv_model],
+        "Year": [originalData.inv_year, inv_year],
+        "Description": [originalData.inv_description, inv_description],
+        "Image": [originalData.inv_image, inv_image],
+        "Thumbnail": [originalData.inv_thumbnail, inv_thumbnail],
+        "Price": [originalData.inv_price, inv_price],
+        "Miles": [originalData.inv_miles, inv_miles],
+        "Color": [originalData.inv_color, inv_color],
+        "Classification": [originalData.classification_id, classification_id],
+      };
+
+      for (const [label, [oldVal, newVal]] of Object.entries(fieldsToCompare)) {
+        if (oldVal != newVal) {
+          changes.push(`${label}: ${oldVal} → ${newVal}`);
+        }
+      }
+
+      const itemName = `${inv_make} ${inv_model}`;
+      const changeSummary = changes.length > 0
+        ? `✅ <strong>${itemName}</strong> updated successfully!<br><br><strong>Changes made:</strong><br>${changes.join("<br>")}`
+        : `⚠️ No changes made to <strong>${itemName}</strong>.`;
+
+      req.flash("notice", changeSummary);
+      return res.redirect("/inv/");
+    } else {
+      // 4. If update failed
+      const classificationList = await utilities.buildClassificationList(classification_id);
+      const itemName = `${inv_make} ${inv_model}`;
+      req.flash("notice", "❌ Update failed.");
+      return res.status(501).render("inventory/edit-inventory", {
+        title: "Edit " + itemName,
+        nav,
+        classificationList,
+        errors: null,
+        inv_id,
+        inv_make,
+        inv_model,
+        inv_year,
+        inv_description,
+        inv_image,
+        inv_thumbnail,
+        inv_price,
+        inv_miles,
+        inv_color,
+        classification_id,
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = invCont;

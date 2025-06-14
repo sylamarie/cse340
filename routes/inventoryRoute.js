@@ -44,11 +44,32 @@ router.post(
 
 // task 3 -- week 4
 // Show add inventory form
-router.get("/add-inventory", invController.buildAddInventory);
+router.get(
+  "/add-inventory",
+  utilities.handleErrors(invController.buildAddInventory)
+)
 
 // Handle add inventory form submission
-router.post("/add-inventory", invController.addInventory);
+router.post(
+  "/add-inventory",
+  invValidation.inventoryRules(),
+  invValidation.checkInventoryData,
+  utilities.handleErrors(invController.addInventory)
+)
 
-router.get("/edit/:inv_id", utilities.checkLogin, invController.buildEditInventory);
+// Show edit inventory form
+router.get(
+  "/edit/:inv_id",
+  utilities.checkLogin,
+  utilities.handleErrors(invController.buildEditInventory)
+)
+
+// Handle inventory update form submission (NEW)
+router.post(
+  "/update",
+  invValidation.inventoryRules(),
+  invValidation.checkUpdateData,
+  utilities.handleErrors(invController.updateInventory)
+);
 
 module.exports = router
