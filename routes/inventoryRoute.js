@@ -49,4 +49,6 @@ router.get("/add-inventory", invController.buildAddInventory);
 // Handle add inventory form submission
 router.post("/add-inventory", invController.addInventory);
 
+router.get("/edit/:inv_id", utilities.checkLogin, invController.buildEditInventory);
+
 module.exports = router
