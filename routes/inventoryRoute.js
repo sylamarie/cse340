@@ -23,6 +23,12 @@ router.get("/cause-error", utilities.handleErrors(invController.causeError))
 // Route to inventory management view (Task 1)
 router.get("/", utilities.handleErrors(invController.buildManagement))
 
+// Return inventory data as JSON
+router.get(
+  "/getInventory/:classification_id",
+  utilities.handleErrors(invController.getInventoryJSON)
+);
+
 // Show form to add classification
 router.get(
   "/add-classification",

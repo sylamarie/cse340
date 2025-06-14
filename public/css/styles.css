@@ -502,6 +502,84 @@ form button[type="submit"]:hover {
   padding-left: 20px;
 }
 
+/* Classification Dropdown */
+#classificationList {
+  margin-bottom: 1.5rem;
+}
+
+#classificationList select {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+/* Inventory Display Table */
+#inventoryDisplay {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#inventoryDisplay th,
+#inventoryDisplay td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+#inventoryDisplay th {
+  background-color: #d4edda;
+  color: black;
+}
+
+#inventoryDisplay tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+#inventoryDisplay a {
+  color: #2980b9;
+  text-decoration: none;
+}
+
+#inventoryDisplay a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+
+  #inventoryDisplay,
+  #inventoryDisplay thead,
+  #inventoryDisplay tbody,
+  #inventoryDisplay th,
+  #inventoryDisplay td,
+  #inventoryDisplay tr {
+    display: block;
+  }
+
+  #inventoryDisplay tr {
+    margin-bottom: 1rem;
+  }
+
+  #inventoryDisplay td {
+    padding-left: 50%;
+    position: relative;
+  }
+
+  #inventoryDisplay td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0;
+    width: 45%;
+    padding-left: 1rem;
+    font-weight: bold;
+  }
+}
+
 /******* Responsive Design ***************/
 @media screen and (min-width: 768px) {
 
