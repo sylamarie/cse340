@@ -6,7 +6,8 @@ const invCont = {};
 invCont.buildManagement = async function (req, res, next) {
   let nav = await utilities.getNav();
   const classificationSelect = await utilities.buildClassificationList();
-  const message = req.flash("message"); // this is an array
+  const message = req.flash("notice");
+  // this is an array
 
   res.render("inventory/management", {
     title: "Inventory Management",
@@ -90,12 +91,12 @@ invCont.addClassification = async function (req, res, next) {
     const addResult = await invModel.addClassification(classification_name);
 
     if (!addResult || addResult.rowCount === 0) {
-      req.flash("error", "Failed to add classification.");
+      req.flash("notice", "❌ Failed to add classification.");
       return res.redirect("/inv/add-classification");
     }
 
-    req.flash("message", "Classification added successfully.");
-    res.redirect("/inv/");  // redirect to inventory management or main page
+    req.flash("notice", `✅ Classification <strong>${classification_name}</strong> added successfully.`);
+    res.redirect("/inv/");  // Redirect to inventory management
   } catch (error) {
     next(error);
   }
@@ -158,7 +159,7 @@ invCont.addInventory = async (req, res, next) => {
         title: "Add Inventory",
         classificationList,
         nav,
-        message: req.flash("message"),
+        message: req.flash("notice"), // changed to "notice"
         errors,
         classification_id,
         inv_make,
@@ -187,14 +188,12 @@ invCont.addInventory = async (req, res, next) => {
     );
 
     if (!addResult) {
-      req.flash("error", "Failed to add inventory item.");
+      req.flash("notice", "❌ Failed to add inventory item."); // changed to "notice"
       return res.redirect("/inv/add-inventory");
     }
 
-    req.flash(
-      "message",
-      `✅ <strong>${inv_year} ${inv_make} ${inv_model}</strong> added successfully!`
-    );       
+    const itemName = `${inv_year} ${inv_make} ${inv_model}`;
+    req.flash("notice", `✅ <strong> ${inv_year} ${inv_make} ${inv_model} </strong> added successfully!`); // changed to "notice"
     res.redirect("/inv/");
   } catch (error) {
     next(error);
@@ -348,6 +347,60 @@ invCont.updateInventory = async function (req, res, next) {
         classification_id,
       });
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* ***************************
+ *  Build delete inventory view
+ * ************************** */
+invCont.buildDeleteInventory = async function (req, res, next) {
+  try {
+    const inv_id = parseInt(req.params.inv_id);
+    const nav = await utilities.getNav();
+    const itemData = await invModel.getInventoryById(inv_id);
+
+    if (!itemData) {
+      req.flash("notice", "Inventory item not found.");
+      return res.redirect("/inv/");
+    }
+
+    const itemName = `${itemData.inv_make} ${itemData.inv_model}`;
+    const classificationList = await utilities.buildClassificationList(itemData.classification_id);
+
+    res.render("inventory/delete-confirm", {
+      title: "Delete " + itemName,
+      nav,
+      itemName,
+      inv_id: itemData.inv_id,
+      inv_make: itemData.inv_make,
+      inv_model: itemData.inv_model,
+      inv_year: itemData.inv_year,
+      inv_price: itemData.inv_price,
+      classificationList,
+      message: req.flash("notice"),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* ***************************
+ *  Delete inventory item
+ * ************************** */
+invCont.deleteInventory = async function (req, res, next) {
+  try {
+    const inv_id = parseInt(req.body.inv_id);
+    const deleteResult = await invModel.deleteInventoryItem(inv_id);
+
+    if (deleteResult && deleteResult.rowCount > 0) {
+      req.flash("notice", "✅ Inventory item deleted successfully.");
+    } else {
+      req.flash("notice", "❌ Failed to delete inventory item.");
+    }
+
+    res.redirect("/inv/");
   } catch (error) {
     next(error);
   }
