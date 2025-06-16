@@ -5,12 +5,14 @@ const invCont = {};
 
 invCont.buildManagement = async function (req, res, next) {
   let nav = await utilities.getNav();
-  const classificationSelect = await utilities.buildClassificationList()
+  const classificationSelect = await utilities.buildClassificationList();
+  const message = req.flash("message"); // this is an array
+
   res.render("inventory/management", {
     title: "Inventory Management",
     nav,
     classificationSelect,
-    message: req.flash("notice"),
+    message,
   });
 };
 
@@ -189,7 +191,10 @@ invCont.addInventory = async (req, res, next) => {
       return res.redirect("/inv/add-inventory");
     }
 
-    req.flash("message", "Inventory item added successfully.");
+    req.flash(
+      "message",
+      `✅ <strong>${inv_year} ${inv_make} ${inv_model}</strong> added successfully!`
+    );       
     res.redirect("/inv/");
   } catch (error) {
     next(error);
