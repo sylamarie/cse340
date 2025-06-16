@@ -36,7 +36,7 @@
     <label for="account_password">New Password</label>
     <div class="password-box">
         <input type="password" id="account_password" name="account_password" required>
-        <i id="eyeIcon" class="fa fa-eye eye-icon" onclick="togglePassword()"></i>
+        <button type="button" id="togglePasswordBtn" class="toggle-btn">Show</button>
     </div>
 
     <input type="hidden" name="account_id" value="<%= accountData.account_id %>">
@@ -44,16 +44,15 @@
     <button type="submit">Change Password</button>
   </form>
   <script>
-    function togglePassword() {
-      const pwdInput = document.getElementById("account_password");
-      const eyeIcon = document.getElementById("eyeIcon");
-      if (pwdInput.type === "password") {
-        pwdInput.type = "text";
-        eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
-      } else {
-        pwdInput.type = "password";
-        eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
-      }
-    }
-    </script>    
+    document.addEventListener("DOMContentLoaded", function () {
+        const pwdInput = document.getElementById("account_password");
+        const toggleBtn = document.getElementById("togglePasswordBtn");
+
+        toggleBtn.addEventListener("click", function () {
+            const isHidden = pwdInput.type === "password";
+            pwdInput.type = isHidden ? "text" : "password";
+            toggleBtn.textContent = isHidden ? "Hide" : "Show";
+            });
+        });
+    </script>
 </main>

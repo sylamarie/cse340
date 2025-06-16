@@ -414,22 +414,22 @@ form.form-card button {
   /* Make room for the icon */
 }
 
-.toggle-eye {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
+.toggle-btn {
+  margin-left: 0.5rem;
+  background: none;
+  border: none;
+  color: #007bff;
   cursor: pointer;
+  font-size: 0.9rem;
 }
 
-.password-rules {
-  color: red;
-  font-size: 0.9em;
-  margin-top: 5px;
+.toggle-btn:hover {
+  text-decoration: underline;
 }
 
-.hidden {
-  display: none;
+.password-box {
+  display: flex;
+  align-items: center;
 }
 
 /* Form labels and inputs */
