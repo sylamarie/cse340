@@ -100,7 +100,7 @@ invCont.addClassification = async function (req, res, next) {
 };
 
 // Task 3 -- Week 4
-invCont.buildAddInventory = async (req, res, next) => {
+invCont.buildAddInventory = async (req, res, next) => { 
   try {
     const classificationList = await utilities.buildClassificationList();
     const nav = await utilities.getNav();
