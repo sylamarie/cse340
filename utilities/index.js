@@ -122,4 +122,17 @@ Util.checkLogin = (req, res, next) => {
   }
 }
 
+/* ****************************************
+ *  Check if user is Admin or Employee
+ * ************************************ */
+Util.checkAccountType = (req, res, next) => {
+  const accountType = res.locals.accountData?.account_type
+  if (accountType === "Admin" || accountType === "Employee") {
+    return next()
+  } else {
+    req.flash("notice", "Access denied. You do not have permission.")
+    return res.redirect("/account/login")
+  }
+}
+
 module.exports = Util

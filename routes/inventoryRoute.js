@@ -21,7 +21,12 @@ router.get(
 router.get("/cause-error", utilities.handleErrors(invController.causeError))
 
 // Route to inventory management view (Task 1)
-router.get("/", utilities.handleErrors(invController.buildManagement))
+router.get(
+  "/",
+  utilities.checkLogin,
+  utilities.checkAccountType,
+  utilities.handleErrors(invController.buildManagement)
+)
 
 // Return inventory data as JSON
 router.get(
@@ -32,36 +37,53 @@ router.get(
 // Show form to add classification
 router.get(
   "/add-classification",
+  utilities.checkLogin,
+  utilities.checkAccountType,
   utilities.handleErrors(invController.buildAddClassification)
 )
 
 // Handle form submission
 router.post(
   "/add-classification",
+  utilities.checkLogin,
+  utilities.checkAccountType,
   invValidation.checkClassificationName,
   utilities.handleErrors(invController.addClassification)
 )
 
 // task 3 -- week 4
 // Show add inventory form
-router.get("/add-inventory", invController.buildAddInventory);
+router.get(
+  "/add-inventory",
+  utilities.checkLogin,
+  utilities.checkAccountType,
+  utilities.handleErrors(invController.buildAddInventory)
+)
 
 // Handle add inventory form submission
-router.post("/add-inventory", invController.addInventory)
+router.post(
+  "/add-inventory",
+  utilities.checkLogin,
+  utilities.checkAccountType,
+  utilities.handleErrors(invController.addInventory)
+)
 
 // Show edit inventory form
 router.get(
   "/edit/:inv_id",
   utilities.checkLogin,
+  utilities.checkAccountType,
   utilities.handleErrors(invController.buildEditInventory)
 )
 
 // Handle inventory update form submission (NEW)
 router.post(
   "/update",
+  utilities.checkLogin,
+  utilities.checkAccountType,
   invValidation.inventoryRules(),
   invValidation.checkUpdateData,
   utilities.handleErrors(invController.updateInventory)
-);
+)
 
 module.exports = router

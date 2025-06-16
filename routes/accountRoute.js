@@ -28,11 +28,8 @@ router.post(
 );
 
 // Deliver account management view
-router.get(
-  "/",
-  utilities.checkLogin,
-  utilities.handleErrors(accountController.buildAccountManagement)
-);
+router.get("/", utilities.checkLogin, utilities.handleErrors(accountController.buildAccountManagement));
+router.get("/logout", utilities.handleErrors(accountController.logout));
 
 // Route to build edit inventory view
 router.get(
