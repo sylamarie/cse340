@@ -1,4 +1,5 @@
 const pool = require("../database/")
+const invModel = require("../models/inventory-model")
 
 async function getClassifications() {
   return await pool.query("SELECT * FROM public.classification ORDER BY classification_name")
@@ -139,6 +140,37 @@ async function deleteInventoryItem(inv_id) {
   }
 }
 
+async function buildManageClassifications(req, res) {
+  const nav = await utilities.getNav();
+  const classifications = await invModel.getClassifications();
+  res.render("inventory/manage-classification", {
+    title: "Manage Classifications",
+    nav,
+    classifications
+  });
+}
+
+// Get all classifications
+async function getAllClassifications() {
+  return await pool.query("SELECT * FROM classification ORDER BY classification_name");
+}
+
+// Update a classification
+async function updateClassification(id, newName) {
+  return await pool.query(
+    "UPDATE classification SET classification_name = $1 WHERE classification_id = $2",
+    [newName, id]
+  );
+}
+
+// Delete a classification
+async function deleteClassification(id) {
+  return await pool.query(
+    "DELETE FROM classification WHERE classification_id = $1",
+    [id]
+  );
+}
+
 module.exports = {
   getClassifications,
   getInventoryByClassificationId,
@@ -146,5 +178,9 @@ module.exports = {
   addClassification,
   addInventoryItem,
   updateInventory,
-  deleteInventoryItem
+  deleteInventoryItem,
+  getAllClassifications,
+  updateClassification,
+  deleteClassification,
+  buildManageClassifications
 }

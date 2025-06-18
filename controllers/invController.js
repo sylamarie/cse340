@@ -406,4 +406,38 @@ invCont.deleteInventory = async function (req, res, next) {
   }
 };
 
+// View classifications
+invCont.buildManageClassifications = async function (req, res) {
+  const nav = await utilities.getNav();
+  const data = await invModel.getAllClassifications();
+  res.render("inventory/manage-classification", {
+    title: "Manage Classifications",
+    nav,
+    classifications: data.rows,
+  });
+};
+
+// Handle update
+invCont.updateClassification = async function (req, res) {
+  const { classification_id, classification_name } = req.body;
+  const result = await invModel.updateClassification(classification_id, classification_name);
+  res.redirect("/inv/manage-classification");
+};
+
+// Handle delete
+invCont.deleteClassification = async function (req, res) {
+  const { classification_id } = req.body;
+  try {
+    await invModel.deleteClassification(classification_id);
+    res.redirect("/inv/manage-classification");
+  } catch (error) {
+    res.render("inventory/manage-classification", {
+      title: "Manage Classifications",
+      nav: await utilities.getNav(),
+      classifications: await invModel.getAllClassifications(),
+      errors: ["Cannot delete classification that is in use."]
+    });
+  }
+};
+
 module.exports = invCont;
